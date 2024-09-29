@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Expense Tracker</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+<body>
+    <div class="container">
+        <h1 class="mt-5">Expense Tracker</h1>
+
+        <form method="POST" action="/set_budget" class="mt-4">
+            <div class="form-group">
+                <label for="budget">Set Budget:</label>
+                <input type="number" class="form-control" id="budget" name="budget" step="0.01" required>
+                <button type="submit" class="btn btn-primary mt-2">Set Budget</button>
+            </div>
+        </form>
+
+        <h3 class="mt-4">Add Expense</h3>
+        <form method="POST" action="/add_expense" class="mt-2">
+            <div class="form-group">
+                <label for="description">Description:</label>
+                <input type="text" class="form-control" id="description" name="description" required>
+            </div>
+            <div class="form-group">
+                <label for="amount">Amount:</label>
+                <input type="number" class="form-control" id="amount" name="amount" step="0.01" required>
+            </div>
+            <button type="submit" class="btn btn-success">Add Expense</button>
+        </form>
+
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="alert alert-{{ category }}">{{ message }}</div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+
+        <h3 class="mt-5">Expenses</h3>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Description</th>
+                    <th>Amount</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for expense in expenses %}
+                    <tr>
+                        <td>{{ expense.description }}</td>
+                        <td>${{ expense.amount }}</td>
+                        <td>
+                            <form method="POST" action="/delete_expense/{{ expense.id }}">
+                                <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+                            </form>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        <h4>Total Expenses: ${{ total_expense }}</h4>
+        <h4>Remaining Budget: ${{ remaining_budget }}</h4>
+    </div>
+</body>
+</html>
